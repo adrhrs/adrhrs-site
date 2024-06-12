@@ -9,9 +9,13 @@ let gameOver = false;
 const keyboardRows = [
     "QWERTYUIOP".split(""),
     "ASDFGHJKL".split(""),
-    "ZXCVBNM".split("")
+    ["⌫"].concat("ZXCVBNM".split("")).concat("↵"),
 ];
 
+const keyLabels = {
+    "↵": "↵",
+    "⌫": "⌫"
+};
 const getFeedback = (guess) => {
     const feedback = Array(WORD_LENGTH).fill('gray');
 
@@ -46,11 +50,11 @@ const renderKeyboard = () => {
 
     keyboardRows.forEach(row => {
         const rowDiv = document.createElement('div');
-        rowDiv.className = 'keyboard-row row';
+        rowDiv.className = 'keyboard-row';
         row.forEach(letter => {
             const key = document.createElement('div');
             key.className = 'key';
-            key.textContent = letter;
+            key.textContent = keyLabels[letter] || letter;
             key.addEventListener('click', () => handleVirtualKeyPress(letter));
             rowDiv.appendChild(key);
         });
@@ -58,14 +62,15 @@ const renderKeyboard = () => {
     });
 };
 
+
 const updateKeyboard = () => {
     const feedbackMap = {};
     guesses.forEach(guess => {
         const feedback = getFeedback(guess);
         for (let i = 0; i < WORD_LENGTH; i++) {
             const letter = guess[i];
-            if (!feedbackMap[letter] || feedback[i] === 'green' ||
-                (feedback[i] === 'yellow' && feedbackMap[letter] !== 'green')) {
+            if (!feedbackMap[letter] || feedback[i] === 'green' || 
+               (feedback[i] === 'yellow' && feedbackMap[letter] !== 'green')) {
                 feedbackMap[letter] = feedback[i];
             }
         }
@@ -73,19 +78,20 @@ const updateKeyboard = () => {
 
     document.querySelectorAll('.key').forEach(key => {
         const letter = key.textContent;
-        if (feedbackMap[letter]) {
-            key.className = `key ${feedbackMap[letter]}`;
-            if (feedbackMap[letter] === 'gray') {
+        const originalLetter = Object.keys(keyLabels).find(key => keyLabels[key] === letter) || letter;
+        if (feedbackMap[originalLetter]) {
+            key.className = `key ${feedbackMap[originalLetter]}`;
+            if (feedbackMap[originalLetter] === 'gray') {
                 key.removeEventListener('click', handleVirtualKeyPress);
             }
         }
     });
 };
-
 const updateDisplay = () => {
     const gridDiv = document.getElementById('grid');
     gridDiv.innerHTML = '';
 
+   
     for (let i = 0; i < MAX_ATTEMPTS; i++) {
         if (i < guesses.length) {
             const feedback = getFeedback(guesses[i]);
@@ -142,7 +148,7 @@ const handleKeyPress = (event) => {
 const handleVirtualKeyPress = (key) => {
     if (gameOver) return;
 
-    if (key === 'Enter' && currentGuess.length === WORD_LENGTH) {
+    if (key === '↵' && currentGuess.length === WORD_LENGTH) {
         guesses.push(currentGuess.toUpperCase());
         if (currentGuess.toUpperCase() === targetWord || guesses.length === MAX_ATTEMPTS) {
             gameOver = true;
@@ -151,7 +157,7 @@ const handleVirtualKeyPress = (key) => {
             currentGuess = '';
             updateDisplay();
         }
-    } else if (key === 'Backspace') {
+    } else if (key === '⌫') {
         currentGuess = currentGuess.slice(0, -1);
         updateDisplay();
     } else if (currentGuess.length < WORD_LENGTH && /^[A-Z]$/.test(key)) {
