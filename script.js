@@ -69,8 +69,8 @@ const updateKeyboard = () => {
         const feedback = getFeedback(guess);
         for (let i = 0; i < WORD_LENGTH; i++) {
             const letter = guess[i];
-            if (!feedbackMap[letter] || feedback[i] === 'green' || 
-               (feedback[i] === 'yellow' && feedbackMap[letter] !== 'green')) {
+            if (!feedbackMap[letter] || feedback[i] === 'green' ||
+                (feedback[i] === 'yellow' && feedbackMap[letter] !== 'green')) {
                 feedbackMap[letter] = feedback[i];
             }
         }
@@ -91,7 +91,7 @@ const updateDisplay = () => {
     const gridDiv = document.getElementById('grid');
     gridDiv.innerHTML = '';
 
-   
+    console.log(gameOver)
     for (let i = 0; i < MAX_ATTEMPTS; i++) {
         if (i < guesses.length) {
             const feedback = getFeedback(guesses[i]);
@@ -103,21 +103,23 @@ const updateDisplay = () => {
         }
     }
 
-    
+
 
     if (gameOver) {
+        event.preventDefault();
         if (guesses.includes(targetWord)) {
-            event.preventDefault();
             Swal.fire({
                 title: "Good job!",
                 text: `You Guess The Correct Word ( ${targetWord} )`,
                 icon: "success"
-              });
+            });
         } else {
-            document.getElementById('game-over').textContent = `Game Over! The word was ${targetWord}`;
+            Swal.fire({
+                title: "You Lose",
+                text: `Game Over! The word was ${targetWord}`,
+                icon: "error"
+            });
         }
-    } else {
-        document.getElementById('game-over').textContent = '';
     }
 
     updateKeyboard();

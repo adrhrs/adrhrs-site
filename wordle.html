@@ -18,7 +18,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #ffffff;
         }
         
         .wordle {
@@ -32,18 +32,22 @@
         }
         
         .letter-box {
-            width: 50px;
-            height: 50px;
-            display: inline-block;
+            width: 60px;
+            height: 60px;
+            display: inline-flex;
+            /* Use flexbox */
+            justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
             margin: 2px;
             border: 3px solid #c7c7c7;
-            /* Thicker black border */
+            /* Thicker grey border */
             border-radius: 8px;
             /* More rounded corners */
-            background-color: #ededed;
+            background-color: #F5F5F5;
             /* Grey background */
             text-align: center;
-            line-height: 50px;
             font-size: 24px;
             font-weight: bold;
         }
@@ -106,10 +110,10 @@
 <body>
     <div class="container">
         <div class="wordle">
-            <h1><b>FLIPP WORDLE</b></h1>
+            <h1><b>FLIPLE</b></h1>
             <div id="grid" class="my-4"></div>
             <div id="keyboard" class="keyboard"></div>
-            <div id="game-over" class="game-over"></div>
+            <!-- <div id="game-over" class="game-over"></div> -->
         </div>
     </div>
     <!-- Bootstrap JS and dependencies -->
